@@ -1,0 +1,26 @@
+{
+  "name": "ask-me",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtxjvmelo/ask-me.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rtxjvmelo/ask-me/issues"
+  },
+  "homepage": "https://github.com/rtxjvmelo/ask-me#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
+}
