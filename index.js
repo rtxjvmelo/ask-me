@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const bodyparser = require('body-parser')
 const connection = require('./database/database')
-const pergunta = require('./database/pergunta')
+const Pergunta = require('./database/pergunta')
+const Resposta = require('./database/resposta')
+const moment = require('moment')
 const port = 3000
 
 connection.authenticate()
@@ -19,7 +21,14 @@ app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 
 app.get('/', (req, res) =>{
-    res.render('index')
+    Pergunta.findAll({raw:true, 
+        order:[['id', 'DESC']]
+    }).then(perguntas => {
+        res.render('index', {
+            perguntas:perguntas,
+            moment: moment
+        })
+    })
 })
 
 app.get("/perguntar", (req,res) =>{
@@ -29,9 +38,27 @@ app.get("/perguntar", (req,res) =>{
 app.post("/salvarpergunta", (req, res) =>{
     let titulo = req.body.titulo
     let descricao = req.body.descricao
-    res.send(`Titulo: ${titulo} / Descrição: ${descricao}`)
+    Pergunta.create({
+        titulo: titulo,
+        descricao: descricao
+    }).then(() => {
+        res.redirect('/')
+    })
 })
 
+
+app.get('/pergunta/:id', (req, res) =>{
+    let id = req.params.id
+    Pergunta.findOne({
+        where: {id: id}
+    }).then(pergunta =>{
+        if(pergunta != undefined){
+            res.render('pagina-pergunta', {
+                pergunta: pergunta
+            })
+        }
+    })
+})
 app.listen(port, (erro) =>{
     if(erro){
         console.log("Erro ao iniciar o servidor")
