@@ -53,12 +53,38 @@ app.get('/pergunta/:id', (req, res) =>{
         where: {id: id}
     }).then(pergunta =>{
         if(pergunta != undefined){
-            res.render('pagina-pergunta', {
-                pergunta: pergunta
+            Resposta.findAll({
+                where: {perguntaId: pergunta.id},
+                order:[['id', 'DESC']]
+            }).then(respostas => {
+                res.render('pagina-pergunta', {
+                    pergunta: pergunta,
+                    respostas: respostas,
+                    moment: moment
+                })
             })
+        }else{
+            res.redirect('/')
         }
     })
 })
+
+app.post('/responder', (req, res) =>{
+    let corpo = req.body.corpo
+    let perguntaId = req.body.perguntaId
+    if(corpo !=''){
+        Resposta.create({
+            corpo: corpo,
+            perguntaId: perguntaId
+        }).then( ()=>{
+            res.redirect('/pergunta/' + perguntaId)
+        })
+    }else{
+        res.redirect('/pergunta/' + perguntaId)
+    }
+})
+
+
 app.listen(port, (erro) =>{
     if(erro){
         console.log("Erro ao iniciar o servidor")
